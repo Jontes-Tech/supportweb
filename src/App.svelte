@@ -3,7 +3,7 @@
     localStorage.setItem("email", prompt("Vad är din epost-adress?"));
   }
   let promise = fetch(
-    "https://support.jontes.page/users/" + localStorage.getItem("email")
+    "https://supportapi.jontes.page/users/" + localStorage.getItem("email")
   ).then((x) => x.json());
   function calcDiff(subbeduntil: number) {
     console.log(subbeduntil);
