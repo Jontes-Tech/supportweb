@@ -3,16 +3,12 @@ lockfileVersion: 5.4
 specifiers:
   '@sveltejs/vite-plugin-svelte': ^1.0.2
   '@tsconfig/svelte': ^3.0.0
-  ps-std: ^0.1.6
   svelte: ^3.49.0
   svelte-check: ^2.8.1
   svelte-preprocess: ^4.10.7
   tslib: ^2.4.0
   typescript: ^4.6.4
   vite: ^3.1.0
-
-dependencies:
-  ps-std: 0.1.6
 
 devDependencies:
   '@sveltejs/vite-plugin-svelte': 1.0.9_svelte@3.50.1+vite@3.1.6
@@ -659,10 +655,6 @@ packages:
       picocolors: 1.0.0
       source-map-js: 1.0.2
     dev: true
-
-  /ps-std/0.1.6:
-    resolution: {integrity: sha512-363nSS/KXlvf92zDPo3BEJ5Ghwuzf/RQUpg4VkK/lsXol6Fxmt88qofiuhmvQfeAD1XYySeX13updBNwATRYRA==}
-    dev: false
 
   /queue-microtask/1.2.3:
     resolution: {integrity: sha512-NuaNSa6flKT5JaSYQzJok04JzTL1CA6aGhv5rfLW3PgqA+M2ChpZQnAC8h8i4ZFkBS8X5RqkDBHA7r4hej3K9A==}

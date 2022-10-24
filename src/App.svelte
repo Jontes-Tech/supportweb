@@ -1,24 +1,28 @@
 <script lang="ts">
-  import { onMount } from "svelte";
+  if (!localStorage.getItem("email")) {
+    localStorage.setItem("email", prompt("Vad är din epost-adress?"));
+  }
+  let promise = fetch(
+    "http://localhost:3001/users/" + localStorage.getItem("email")
+  ).then((x) => x.json());
+  function calcDiff(subbeduntil: number) {
+    console.log(subbeduntil);
+    const now = Date.now() / 1000;
+    const diff = subbeduntil - now;
+    return Math.floor(diff / 86400);
+  }
+  import Modal from './Modal.svelte';
 
-  let data = [];
-  let done = false;
+let isOpenModal = false;
 
-  onMount(async () => {
-    const email = prompt("Vad är din epost-adress?");
-    const res = await fetch("http://localhost:3001/users/" + email);
-    data = await res.json();
-    done = true;
-    const oneDay = 1000 * 60 * 60 * 24;
-    const date1 = new Date();
+function openModal() {
+    isOpenModal = true;
+}
 
-    // Calculating the time difference between two dates
-    const diffInTime = date1.getTime() - data.subbedUntil;
-
-    // Calculating the no. of days between two dates
-    const diffInDays = Math.floor(diffInTime / oneDay);
-    console.log(diffInTime);
-  });
+function closeModal() {
+    isOpenModal = false;
+}
+  
 </script>
 
 <main>
@@ -31,20 +35,29 @@
     <div class="btn logo">Support</div>
   </div>
   <div id="body">
-    {#if data.realname === undefined && done === true}
-      <h1>Du verkar inte än vara kund hos Seniordator</h1>
-      <p>Du kan ändå chatta med supporten nere i högra hörnet!</p>
-    {:else if data.realname === undefined && done === false}
-      <p>Vänligen skriv in din epost i pop-up fönstret.</p>
-    {:else}
+    {#await promise}
+      <p>Loading!</p>
+    {:then data}
       <h1>Tjenare, {data.realname}!</h1>
+      {#if calcDiff(data.subbeduntil) > 0}
+        <p>
+          Din prenumeration <b>{data.plan}</b> kommer att gå ut om
+          <b>{calcDiff(data.subbeduntil)}</b>
+          {data.daysleft === 1 ? "dag" : "dagar"}.
+        </p>
+        <button class='moretime' on:click={openModal}>Lägg till mer tid!</button>
+        <Modal isOpenModal={isOpenModal} on:closeModal={closeModal} />
+      {:else}
+        <p>Du har ingen aktiv prenumeration.</p>
+        <button class='moretime' on:click={openModal}>Lägg till mer tid!</button>
+        <Modal isOpenModal={isOpenModal} on:closeModal={closeModal} />
+      {/if}
+    {:catch error}
+      <h1>Vi verkar ha problem!</h1>
       <p>
-        Du har planen <b>{data.plan}</b> och din prenumeration kommer att gå ut
-        <b
-          >om {diffInDays}
-          {diffInDays !== 1 ? "dagar" : "dag"}</b
-        >!
+        Vårat kontosystem verkar lite småtrasigt just nu, men du kan ändå chatta
+        eller ringa nere i vänstra hörnet!
       </p>
-    {/if}
+    {/await}
   </div>
 </main>

@@ -61,3 +61,10 @@ body {
 #body {
   padding: 1em;
 }
+.moretime {
+  background-color: #283618;
+  padding: 1em;
+  border-radius: 1em;
+  color: white;
+  border: none;
+}
