@@ -11,18 +11,17 @@
     const diff = subbeduntil - now;
     return Math.floor(diff / 86400);
   }
-  import Modal from './Modal.svelte';
+  import Modal from "./Modal.svelte";
 
-let isOpenModal = false;
+  let isOpenModal = false;
 
-function openModal() {
+  function openModal() {
     isOpenModal = true;
-}
+  }
 
-function closeModal() {
+  function closeModal() {
     isOpenModal = false;
-}
-  
+  }
 </script>
 
 <main>
@@ -45,12 +44,14 @@ function closeModal() {
           <b>{calcDiff(data.subbeduntil)}</b>
           {data.daysleft === 1 ? "dag" : "dagar"}.
         </p>
-        <button class='moretime' on:click={openModal}>Lägg till mer tid!</button>
-        <Modal isOpenModal={isOpenModal} on:closeModal={closeModal} />
+        <button class="moretime" on:click={openModal}>Lägg till mer tid!</button
+        >
+        <Modal {isOpenModal} on:closeModal={closeModal} />
       {:else}
         <p>Du har ingen aktiv prenumeration.</p>
-        <button class='moretime' on:click={openModal}>Lägg till mer tid!</button>
-        <Modal isOpenModal={isOpenModal} on:closeModal={closeModal} />
+        <button class="moretime" on:click={openModal}>Lägg till mer tid!</button
+        >
+        <Modal {isOpenModal} on:closeModal={closeModal} />
       {/if}
     {:catch error}
       <h1>Vi verkar ha problem!</h1>
@@ -59,5 +60,15 @@ function closeModal() {
         eller ringa nere i vänstra hörnet!
       </p>
     {/await}
+    <call-us-selector
+      phonesystem-url="https://1108.3cx.cloud"
+      party="LiveChat137921"
+    />
+    <script
+      defer
+      src="https://downloads-global.3cx.com/downloads/livechatandtalk/v1/callus.js"
+      id="tcx-callus-js"
+      charset="utf-8"
+    ></script>
   </div>
 </main>
