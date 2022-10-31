@@ -1,6 +1,20 @@
 <script lang="ts">
   if (!localStorage.getItem("email")) {
-    localStorage.setItem("email", prompt("Vad är din epost-adress?"));
+    const email = prompt('Välkommen! Vad är din epostadress?').toLowerCase()
+    const re = /(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))/;
+    console.log(email)
+    if (!email) {
+      alert('Du måste skriva in en epost.')
+    }
+    if (!re.test(email)) {
+      alert('Det ser inte ut som en epost. Klicka på "ok" för att försöka igen.')
+    }
+    if (email && re.test(email)) {
+      localStorage.setItem('email', email)
+    }
+    else {
+      window.location.reload()
+    }
   }
   let promise = fetch(
     "https://supportapi.jontes.page/users/" + localStorage.getItem("email")
@@ -11,6 +25,7 @@
     const diff = subbeduntil - now;
     return Math.floor(diff / 86400);
   }
+  import { dataset_dev } from "svelte/internal";
   import Modal from "./Modal.svelte";
 
   let isOpenModal = false;
@@ -22,6 +37,13 @@
   function closeModal() {
     isOpenModal = false;
   }
+
+  function logout() {
+    localStorage.clear()
+    window.location.reload()
+  }
+
+  localStorage.setItem('callus.greeting_activated', 'true')
 </script>
 
 <main>
@@ -29,15 +51,16 @@
     <img
       id="jonte"
       alt="Jonte"
-      src="https://cdn.jontes.page/cdn/avatar.min.webp"
+      src="https://jontes.page/images/avatar.webp"
     />
     <div class="btn logo">Support</div>
+    <button class='logout' on:click={logout}>Logga ut!</button>
   </div>
   <div id="body">
     {#await promise}
       <p>Loading!</p>
     {:then data}
-      <h1>Tjenare, {data.realname}!</h1>
+      <h1>Tjenare, {data.realname ? data.realname : localStorage.getItem('email')}!</h1>
       {#if calcDiff(data.subbeduntil) > 0}
         <p>
           Din prenumeration <b>{data.plan}</b> kommer att gå ut om
