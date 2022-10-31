@@ -22,7 +22,7 @@
     Rabatter kan ges vid köp via Livechatten eller telefon (nere i högra hörnet) om du inte behöver ALL INCLUSIVE.
   </p>
   <li>Swisha 140kr gånger hur många månader du vill prenumerara till 070 304 66 27 med meddelandet "Support {localStorage.getItem('email')}".</li>
-  <li>Om detta inte går kan du prata med livechatten nere i vänstra hörnet och diskutera alternativ.</li>
+  <li>Om detta inte går kan du prata med livechatten nere i högra hörnet och diskutera alternativ.</li>
   <button on:click={closeModal}>Avbryt!</button>
 </div>
 
