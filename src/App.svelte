@@ -92,7 +92,7 @@
         id="wp-live-chat-by-3CX"
         minimized="false"
         animation-style="slideup"
-        party="LiveChat137921"
+        party="jonatanholmgren"
         minimized-style="bubbleright"
         allow-call="true"
         allow-video="false"
