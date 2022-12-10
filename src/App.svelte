@@ -69,6 +69,9 @@
           <b>{calcDiff(data.subbeduntil)}</b>
           {data.daysleft === 1 ? "dag" : "dagar"}.
         </p>
+        <p>
+          Delar av hemsidan är på Engelska, men du kan självklart skriva till eller prata med oss på Svenska!
+        </p>
         <button class="moretime" on:click={openModal}>Lägg till mer tid!</button
         >
         <Modal {isOpenModal} on:closeModal={closeModal} />
