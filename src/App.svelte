@@ -80,11 +80,12 @@
       {/if}
       <div style="opacity: 0">
         {localStorage.setItem(
-          "call-us-auth-https%3A%2F%2F1108.3cx.cloud",
+          "call-us-auth-https%3A%2F%2Fholmgren.3cx.se%3A5001",
           `{"name":"${
             data.realname ? data.realname : "Inte kund än"
           }","email":"${localStorage.getItem("email")}"}`
         )}
+        {localStorage.setItem("call-us-chat-active-https%3A%2F%2Fholmgren.3cx.se%3A5001LiveChat681789", "true")}
       </div>
       <!--Use the below code snippet to provide real time updates to the live chat plugin without the need of copying and paste each time the snippet to  your website when changes are made to the configuration -->
       <call-us-selector
@@ -101,7 +102,7 @@
       <h1>Vi verkar ha problem!</h1>
       <p>
         Vårat kontosystem verkar lite småtrasigt just nu. Vänligen ring
-        070-3046627 och rapportera problemet.
+        070-3046627 istället.
       </p>
     {/await}
   </div>
