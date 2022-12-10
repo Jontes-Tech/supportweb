@@ -85,12 +85,40 @@
             data.realname ? data.realname : "Inte kund än"
           }","email":"${localStorage.getItem("email")}"}`
         )}
-        {localStorage.setItem("call-us-chat-active-https%3A%2F%2Fholmgren.3cx.se%3A5001LiveChat681789", "true")}
+        {localStorage.setItem(
+          "call-us-chat-active-https%3A%2F%2Fholmgren.3cx.se%3A5001LiveChat681789",
+          "true"
+        )}
       </div>
-      <!--Use the below code snippet to provide real time updates to the live chat plugin without the need of copying and paste each time the snippet to  your website when changes are made to the configuration -->
-      <call-us-selector
+      <call-us
         phonesystem-url="https://holmgren.3cx.se:5001"
+        style="position:fixed;font-size:16px;line-height:17px;z-index: 99999;--call-us-main-accent-color:#14A5FF;--call-us-main-background-color:#404040;--call-us-plate-background-color:#373737;--call-us-plate-font-color:#D9D9D9;--call-us-main-font-color:#FFFFFF;--call-us-agent-bubble-color:#FFFFFF10;right: 20px; bottom: 20px;"
+        id="wp-live-chat-by-3CX"
+        minimized="true"
+        animation-style="noanimation"
         party="LiveChat681789"
+        minimized-style="bubbleright"
+        allow-call="true"
+        allow-video="false"
+        allow-soundnotifications="true"
+        enable-mute="true"
+        enable-onmobile="true"
+        offline-enabled="true"
+        enable="true"
+        ignore-queueownership="false"
+        authentication="both"
+        show-operator-actual-name="true"
+        aknowledge-received="true"
+        gdpr-enabled="true"
+        message-userinfo-format="both"
+        message-dateformat="both"
+        lang="se"
+        button-icon-type="default"
+        greeting-visibility="none"
+        greeting-offline-visibility="none"
+        chat-delay="0"
+        enable-direct-call="true"
+        enable-ga="false"
       />
       <script
         defer
