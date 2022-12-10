@@ -112,7 +112,7 @@
         gdpr-enabled="true"
         message-userinfo-format="both"
         message-dateformat="both"
-        lang="se"
+        lang="sv"
         button-icon-type="default"
         greeting-visibility="none"
         greeting-offline-visibility="none"
