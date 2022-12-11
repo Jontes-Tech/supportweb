@@ -118,11 +118,11 @@
         chat-delay="0"
         enable-direct-call="true"
         enable-ga="false"
-        invite-message="Tjenixen %NAME%, hur kan jag hjälpa till"
+        invite-message="Tjenixen %NAME%, hur kan jag hjälpa till?"
         authentication-message="Kan du ange ditt namn och epost?"
         unavailable-message="Jag är offline, vänligen skriv ett meddelande."
         offline-finish-message="Tack, jag har tagit emot ditt meddelande och kommer att kontakta dig så snart som möjligt."
-        ending-message="%NAME% din session har precis avslutats, tveka inte att återkomma om det behövs"
+        ending-message="Din session har precis avslutats, tveka inte att återkomma om det behövs!"
         first-response-message=""
         greeting-message=""
         greeting-offline-message="Hej, hur kan jag hjälpa dig?"
@@ -137,7 +137,7 @@
       <h1>Vi verkar ha problem!</h1>
       <p>
         Vårat kontosystem verkar lite småtrasigt just nu. Vänligen ring
-        070-3046627 istället.
+        <b>070-3046627</b> istället.
 
         Felkod: <code>${error}</code>
       </p>
