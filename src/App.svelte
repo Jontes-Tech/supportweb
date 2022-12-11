@@ -69,9 +69,6 @@
           <b>{calcDiff(data.subbeduntil)}</b>
           {data.daysleft === 1 ? "dag" : "dagar"}.
         </p>
-        <p>
-          Delar av hemsidan är på Engelska, men du kan självklart skriva till eller prata med oss på Svenska!
-        </p>
         <button class="moretime" on:click={openModal}>Lägg till mer tid!</button
         >
         <Modal {isOpenModal} on:closeModal={closeModal} />
@@ -115,13 +112,20 @@
         gdpr-enabled="true"
         message-userinfo-format="both"
         message-dateformat="both"
-        lang="sv"
         button-icon-type="default"
         greeting-visibility="none"
         greeting-offline-visibility="none"
         chat-delay="0"
         enable-direct-call="true"
         enable-ga="false"
+        invite-message="Tjenixen %NAME%, hur kan jag hjälpa till"
+        authentication-message="Kan du ange ditt namn och epost?"
+        unavailable-message="Jag är offline, vänligen skriv ett meddelande."
+        offline-finish-message="Tack, jag har tagit emot ditt meddelande och kommer att kontakta dig så snart som möjligt."
+        ending-message="%NAME% din session har precis avslutats, tveka inte att återkomma om det behövs"
+        first-response-message=""
+        greeting-message=""
+        greeting-offline-message="Hej, hur kan jag hjälpa dig?"
       />
       <script
         defer
@@ -134,6 +138,8 @@
       <p>
         Vårat kontosystem verkar lite småtrasigt just nu. Vänligen ring
         070-3046627 istället.
+
+        Felkod: <code>${error}</code>
       </p>
     {/await}
   </div>
