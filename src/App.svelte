@@ -91,7 +91,7 @@
         )}
       </div>
       <call-us
-        phonesystem-url="https://holmgren.3cx.se:5001"
+        phonesystem-url="https://holmgren.3cx.se"
         style="position:fixed;font-size:16px;line-height:17px;z-index: 99999;--call-us-main-accent-color:#14A5FF;--call-us-main-background-color:#404040;--call-us-plate-background-color:#373737;--call-us-plate-font-color:#D9D9D9;--call-us-main-font-color:#FFFFFF;--call-us-agent-bubble-color:#FFFFFF10;right: 20px; bottom: 20px;"
         id="wp-live-chat-by-3CX"
         minimized="true"
