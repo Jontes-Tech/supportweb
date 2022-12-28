@@ -80,13 +80,13 @@
       {/if}
       <div style="opacity: 0">
         {localStorage.setItem(
-          "call-us-auth-https%3A%2F%2Fholmgren.3cx.se%3A5001",
+          "call-us-auth-https%3A%2F%2Fholmgren.3cx.se",
           `{"name":"${
             data.realname ? data.realname : "Inte kund än"
           }","email":"${localStorage.getItem("email")}"}`
         )}
         {localStorage.setItem(
-          "call-us-chat-active-https%3A%2F%2Fholmgren.3cx.se%3A5001LiveChat681789",
+          "call-us-chat-active-https%3A%2F%2Fholmgren.3cx.seLiveChat681789",
           "true"
         )}
       </div>
