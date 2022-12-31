@@ -1,5 +1,19 @@
 <script lang="ts">
-  import Chat from "./chat.svelte";
+  import PocketBase from "pocketbase";
+  let record = {
+    collectionId: "",
+    collectionName: "",
+    created: "",
+    customer: "",
+    id: "",
+    problem: "",
+    sessionId: "",
+    state: "Ok",
+    updated: "",
+  };
+
+  const pb = new PocketBase("https://supportdb.jontes.page");
+  let problem = "";
   if (!localStorage.getItem("email")) {
     const email = prompt("Välkommen! Vad är din epostadress?").toLowerCase();
     const re =
@@ -19,128 +33,181 @@
       window.location.reload();
     }
   }
+  function calcDiff(expires: string) {
+    return Math.floor((new Date(expires).getTime() - Date.now()) / 86400000);
+  }
   let promise = fetch(
-    "https://supportapi.jontes.page/users/" + localStorage.getItem("email")
+    "https://supportdb.jontes.page/api/collections/customers/records?mail=" +
+      localStorage.getItem("email")
   ).then((x) => x.json());
-  function calcDiff(subbeduntil: number) {
-    const now = Date.now() / 1000;
-    const diff = subbeduntil - now;
-    return Math.floor(diff / 86400);
+
+  import { Modals, closeModal } from "svelte-modals";
+
+  import { openModal } from "svelte-modals";
+  import ModalComponent from "./ModalCompontent.svelte";
+
+  function handleClick() {
+    openModal(ModalComponent, {
+      title: "Skaffa Support",
+      message: `Få oändligt med support för endast 140 sek / månad för alla dina enheter. Rabatter kan ges via mejl (support@jontes.page). Hur betalar man? Swisha 140*antal månader du vill ha till 0703046627 och skriv i bes "Support ${localStorage.getItem(
+        "email"
+      )} Obegränsad"`,
+    });
   }
-  import { dataset_dev } from "svelte/internal";
-  import Modal from "./Modal.svelte";
-
-  let isOpenModal = false;
-
-  function openModal() {
-    isOpenModal = true;
+  function generateId() {
+    let pass = "";
+    const str =
+      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    for (let i = 1; i <= 32; i++) {
+      var char = Math.floor(Math.random() * str.length + 1);
+      pass += str.charAt(char);
+    }
+    return pass;
   }
-
-  function closeModal() {
-    isOpenModal = false;
+  async function isOnline() {
+    let date = new Date();
+    const res = await fetch(
+      "https://supportdb.jontes.page/api/collections/meta/records/mgjjj0pqaljkzsk"
+    );
+    const json = await res.json();
+    if (json.online === "t") return true;
+    if (json.online === "f") return false;
+    if (date.getUTCDay() > 4) {
+      if (date.getUTCHours() + 1 > 8 && date.getUTCHours() + 1 < 20) {
+        return true;
+      }
+    }
+    if (date.getUTCDay() < 4) {
+      if (date.getUTCHours() + 1 > 16 && date.getUTCHours() + 1 < 20) {
+        return true;
+      }
+    }
+    return false;
   }
+  import { onMount } from "svelte";
 
-  function logout() {
-    localStorage.clear();
-    window.location.reload();
-  }
-
-  localStorage.setItem("callus.greeting_activated", "true");
+  let promise2;
+  onMount(async () => {
+    promise2 = isOnline();
+  });
 </script>
 
-<main>
-  <div class="header">
-    <img id="jonte" alt="Jonte" src="https://jontes.page/images/avatar.webp" />
-    <div class="btn logo">Support</div>
-    <button class="logout" on:click={logout}>Logga ut!</button>
-  </div>
-  <div id="body">
-    {#await promise}
-      <p>Loading!</p>
-    {:then data}
-      <h1>
-        Tjenare, {data.realname
-          ? data.realname
-          : localStorage.getItem("email")}!
-      </h1>
-      {#if calcDiff(data.subbeduntil) > 0}
-        <p>
-          Din prenumeration <b>{data.plan}</b> kommer att gå ut om
-          <b>{calcDiff(data.subbeduntil)}</b>
-          {data.daysleft === 1 ? "dag" : "dagar"}.
-        </p>
-        <button class="moretime" on:click={openModal}>Lägg till mer tid!</button
+<svelte:window
+  on:keydown={(e) => {
+    if (e.key === "Escape") closeModal();
+  }}
+/>
+<main class="bg-stone-800 p-4 text-white m-8">
+  {#await promise}
+    <p class="bg-stone-800">Laddar!</p>
+  {:then data}
+    <h1
+      class="mb-4 text-4xl font-extrabold tracking-tight leading-none md:text-5xl lg:text-6xl text-white"
+    >
+      Tjenare
+      <mark class="px-2 text-white rounded bg-blue-500"
+        >{data.items[0].firstname}</mark
+      >, {#await promise2 then online}
+        {#if online}
+          hur kan jag hjälpa dig idag?
+        {:else}
+          jag är offline, skriv ditt ärende så kontaktar jag dig.
+        {/if}
+      {/await}
+    </h1>
+    <p class="text-lg font-normal lg:text-xl text-stone-400">
+      {#if calcDiff(data.items[0].expires) > -1}
+        Du har {calcDiff(data.items[0].expires)} dag{calcDiff(
+          data.items[0].expires
+        ) !== 1
+          ? "ar"
+          : ""} kvar på din prenumeration <b>{data.items[0].plan}</b>.
+        <button class="text-white font-bold" on:click={handleClick}
+          >Skaffa.</button
         >
-        <Modal {isOpenModal} on:closeModal={closeModal} />
       {:else}
-        <p>Du har ingen aktiv prenumeration.</p>
-        <button class="moretime" on:click={openModal}>Lägg till mer tid!</button
+        Du har ingen prenumeration. <button
+          class="text-white font-bold"
+          on:click={handleClick}>Skaffa.</button
         >
-        <Modal {isOpenModal} on:closeModal={closeModal} />
       {/if}
-      <div style="opacity: 0">
-        {localStorage.setItem(
-          "call-us-auth-https%3A%2F%2Fholmgren.3cx.se",
-          `{"name":"${
-            data.realname ? data.realname : "Inte kund än"
-          }","email":"${localStorage.getItem("email")}"}`
-        )}
-        {localStorage.setItem(
-          "call-us-chat-active-https%3A%2F%2Fholmgren.3cx.seLiveChat681789",
-          "true"
-        )}
-      </div>
-      <call-us
-        phonesystem-url="https://holmgren.3cx.se"
-        style="position:fixed;font-size:16px;line-height:17px;z-index: 99999;--call-us-main-accent-color:#14A5FF;--call-us-main-background-color:#404040;--call-us-plate-background-color:#373737;--call-us-plate-font-color:#D9D9D9;--call-us-main-font-color:#FFFFFF;--call-us-agent-bubble-color:#FFFFFF10;right: 20px; bottom: 20px;"
-        id="wp-live-chat-by-3CX"
-        minimized="true"
-        animation-style="noanimation"
-        party="LiveChat681789"
-        minimized-style="bubbleright"
-        allow-call="true"
-        allow-video="false"
-        allow-soundnotifications="true"
-        enable-mute="true"
-        enable-onmobile="true"
-        offline-enabled="true"
-        enable="true"
-        ignore-queueownership="false"
-        authentication="both"
-        show-operator-actual-name="true"
-        aknowledge-received="true"
-        gdpr-enabled="true"
-        message-userinfo-format="both"
-        message-dateformat="both"
-        button-icon-type="default"
-        greeting-visibility="none"
-        greeting-offline-visibility="none"
-        chat-delay="0"
-        enable-direct-call="true"
-        enable-ga="false"
-        invite-message="Tjenixen %NAME%, hur kan jag hjälpa till?"
-        authentication-message="Kan du ange ditt namn och epost?"
-        unavailable-message="Jag är offline, vänligen skriv ett meddelande."
-        offline-finish-message="Tack, jag har tagit emot ditt meddelande och kommer att kontakta dig så snart som möjligt."
-        ending-message="Din session har precis avslutats, tveka inte att återkomma om det behövs!"
-        first-response-message=""
-        greeting-message=""
-        greeting-offline-message="Hej, hur kan jag hjälpa dig?"
-      />
-      <script
-        defer
-        src="https://downloads-global.3cx.com/downloads/livechatandtalk/v1/callus.js"
-        id="tcx-callus-js"
-        charset="utf-8"
-      ></script>
-    {:catch error}
-      <h1>Vi verkar ha problem!</h1>
-      <p>
-        Vårat kontosystem verkar lite småtrasigt just nu. Vänligen ring
-        <b>070-3046627</b> istället.
+    </p>
+    {#if calcDiff(data.items[0].expires) > 0}
+      <form
+        on:submit={async (e) => {
+          e.preventDefault();
+          if (record.state === "Ok") {
+            const data2 = {
+              customer: data.items[0].id,
+              problem: problem,
+              state: "Meddelar expert",
+              sessionId: generateId(),
+            };
+            fetch("https://api.jontes.page/new-support-ticket", {
+              method: "POST",
+            });
 
-        Felkod: <code>${error}</code>
-      </p>
-    {/await}
-  </div>
+            record = await pb.collection("sessions").create(data2);
+            console.table(record);
+            console.log("Starting sub to record: " + record.id);
+            pb.collection("sessions").subscribe(record.id, function (e) {
+              if (e.record.state === "Startad")
+                window.location.href =
+                  "https://meet.jit.si/" + record.sessionId;
+              record.state = e.record.state;
+            });
+          } else if (record.state === "Startad")
+            window.location.href = "https://meet.jit.si/" + record.sessionId;
+        }}
+      >
+        <div class="relative z-0">
+          <input
+            type="text"
+            bind:value={problem}
+            class="block w-full p-4 text-sm border rounded-lg bg-stone-700 border-stone-600 placeholder-stone-400 text-white focus:ring-blue-500 focus:border-blue-500"
+            placeholder="Skriv ärende: (ex: Mejlen på min Seniordator funkar, men inte på min telefon)"
+            required
+          />
+          <button
+            type="submit"
+            class="text-white absolute right-2.5 bottom-2.5 focus:ring-4 focus:outline-none font-medium rounded-lg text-sm px-4 py-2 bg-blue-600 hover:bg-blue-700 focus:ring-blue-800"
+          >
+            {#if record.state === "Meddelar expert"}
+              <svg
+                role="status"
+                class="inline mr-3 w-4 h-4 text-white animate-spin"
+                viewBox="0 0 100 101"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                  fill="#E5E7EB"
+                />
+                <path
+                  d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                  fill="currentColor"
+                />
+              </svg>
+            {/if}
+            {record.state}</button
+          >
+        </div>
+      </form>
+      {#if record.state === "Meddelar expert"}
+        <p class="text-gray-400">
+          Vänligen vänta fem minuter på svar. Om jag inte svarat då mejlar jag
+          dig.
+        </p>
+      {/if}
+    {/if}
+  {:catch}
+    <h1 class="text-4xl">Vi verkar ha problem!</h1>
+    <p>
+      Vänligen ring 0703046627
+    </p>
+  {/await}
+  <Modals>
+    <div slot="svelte-modal" on:click={handleClick} />
+  </Modals>
 </main>
